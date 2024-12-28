@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zillow Companion</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        .card {
+            border-radius: 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+            position: relative; /* For positioning the button */
+        }
+        .card-location {
+            background-color: #b3d9ff; /* Light Blue */
+            color: black;
+        }
+        .card-demographics {
+            background-color: #cce7ff; /* Slightly Darker Blue */
+            color: black;
+        }
+        .card-crime {
+            background-color: #e0e0e0; /* Darker Grey */
+            color: black;
+        }
+        .card-wikivoyage {
+            background-color: #d6d6d6; /* Medium Grey */
+            color: black;
+        }
+        .card-transit {
+            background-color: #a8d0f0; /* Medium Blue */
+            color: black;
+        }
+        .card-wikipedia {
+            background-color: #f0f0f0; /* Light Grey */
+            color: black;
+        }
+        /* Custom style for buttons to reduce gap */
+        .btn-group-buttons {
+            display: flex;
+            gap: 10px; /* Adjust as needed */
+        }
+        .btn-group-buttons .btn {
+            flex: 1;
+        }
+        /* Remove extra margin for Wikivoyage list items */
+        .card-wikivoyage ul {
+            padding-left: 0; /* Remove padding if needed */
+            margin-bottom: 0; /* Remove bottom margin on the ul */
+        }
+        .card-wikivoyage ul li {
+            margin-top: 0; /* Remove any top margin */
+            margin-bottom: 0; /* Ensure no bottom margin */
+        }
+        /* Position More button in the top right corner */
+        .panel-more-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+        }
+        /* Adjust spacing for Walk/Bike/Transit scores */
+        .card-transit p {
+            margin: 0;
+        }
+        /* Smaller font for zip code and neighborhood */
+        .small-subtext {
+            font-size: 0.8rem;
+            color: #6c757d; /* Bootstrap's gray-600 */
+        }
+        /* Center icons when there are less than three in a row */
+        .row.row-cols-3 > .col {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 80px; /* Adjust this height to match your content */
+        }
+        /* CSS for collapse/expand functionality */
+        .panel-collapse {
+            display: none;
+        }
+        .card-body .row:first-child {
+            display: flex; /* Show first row by default */
+        }
+        .expand-all-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+        }
+        /* Ensure all rows align vertically */
+        .card-demographics .row {
+            margin-bottom: 0; /* Remove default margin to align rows */
+        }
+        .card-demographics .row:not(:first-child) {
+            margin-top: 10px; /* Add space between rows if needed */
+        }
+        /* Force alignment of icons */
+        .card-demographics .row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+        }
+        .card-demographics .row > .col {
+            place-self: center;
+        }
+        /* Desirability Index styling */
+        .desirability-index {
+            background-color: #ffebcc; /* Light orange */
+            padding: 10px;
+            border-radius: 10px;
+            text-align: center;
+            margin-bottom: 20px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .desirability-index h5 {
+            margin-bottom: 0;
+        }
+        .desirability-index i {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            cursor: pointer;
+        }
+        /* Add color to icons */
+        .card-demographics .bi-people-fill { color: #17a2b8; }
+        .card-demographics .bi-calendar3 { color: #dc3545; }
+        .card-demographics .bi-flag-fill { color: #ffc107; }
+        .card-demographics .bi-person-check-fill { color: #28a745; }
+        .card-demographics .bi-person-fill { color: #6f42c1; }
+        .card-demographics .bi-person-lines-fill { color: #fd7e14; }
+        .card-demographics .bi-gender-female { color: #e83e8c; }
+        .card-demographics .bi-gender-male { color: #007bff; }
+        .card-demographics .bi-mortarboard-fill { color: #6c757d; }
+        .card-demographics .bi-book-half { color: #343a40; }
+        .card-demographics .bi-briefcase-fill { color: #20c997; }
+        .card-demographics .bi-cash-stack { color: #212529; }
+        .card-demographics .bi-wallet-fill { color: #f8f9fa; }
+        .card-demographics .bi-house-door-fill { color: #17a2b8; }
+        .card-demographics .bi-house-heart-fill { color: #dc3545; }
+        .card-demographics .bi-building { color: #ffc107; }
+        .card-demographics .bi-currency-dollar { color: #28a745; }
+        .card-demographics .bi-award-fill { color: #6f42c1; }
+        
+        /* Color for crime, wiki, transit icons */
+        .card-crime .bi-shield-exclamation { color: #dc3545; }
+        .card-crime .bi-person-x-fill { color: #bd2130; }
+        .card-crime .bi-person-exclamation { color: #e83e8c; }
+        .card-wikivoyage .bi { color: #007bff; }
+        .card-transit .bi-person-fill { color: #28a745; }
+        .card-transit .bi-bicycle { color: #ffc107; }
+        .card-transit .bi-bus-front-fill { color: #007bff; }
+    </style>
+</head>
+<body>
+    <div class="container my-3">
+        <h4 class="text-center mb-4">Get Information for Current Location</h4>
+
+        <!-- Top Buttons -->
+        <div class="btn-group-buttons mb-3">
+            <button class="btn btn-primary">Display Info</button>
+            <button class="btn btn-secondary">Speak All Info</button>
+        </div>
+
+        <!-- Desirability Index -->
+        <div class="desirability-index">
+            <h5>Desirability Index: 91 out of 100</h5>
+            <i class="bi bi-gear" onclick="window.location.href='settings.html';"></i>
+        </div>
+
+        <!-- Panel 1 - Population Data -->
+        <div class="card card-demographics mb-3">
+            <div class="card-body">
+                <h5 class="text-center mb-3">Population Data</h5>
+                <button class="btn btn-link expand-all-btn" onclick="toggleAllPanels()">Expand All</button>
+                <div class="row row-cols-3">
+                    <div class="col text-center">
+                        <i class="bi bi-people-fill fs-2"></i>
+                        <p>Population: 38,245</p>
+                    </div>
+                    <div class="col text-center">
+                        <i class="bi bi-calendar3 fs-2"></i>
+                        <p>Median Age: 57</p>
+                    </div>
+                    <div class="col text-center">
+                        <i class="bi bi-flag-fill fs-2"></i>
+                        <p>Born in USA: 83%</p>
+                    </div>
+                </div>
+                <div class="panel-collapse">
+                    <div class="row row-cols-3">
+                        <div class="col text-center">
+                            <i class="bi bi-person-check-fill fs-2"></i>
+                            <p>US Citizens: 94%</p>
+                        </div>
+                        <div class="col text-center"></div> <!-- Empty column for spacing -->
+                        <div class="col text-center"></div> <!-- Empty column for spacing -->
+                    </div>
+                </div>
+            </div>
+        </div>        <!-- Panel 2 - Race and Gender -->
+        <div class="card card-demographics mb-3">
+            <div class="card-body">
+                <h5 class="text-center mb-3">Race and Gender</h5>
+                <div class="row row-cols-3">
+                    <div class="col text-center">
+                        <i class="bi bi-person-fill fs-2" style="color: #FFFFFF; background-color: #000000; border-radius: 50%; padding: 5px;"></i>
+                        <p>White: 95%</p>
+                    </div>
+                    <div class="col text-center">
+                        <i class="bi bi-person-fill fs-2" style="color: #000000; background-color: #FFFFFF; border-radius: 50%; padding: 5px;"></i>
+                        <p>Black: 3%</p>
+                    </div>
+                    <div class="col text-center">
+                        <i class="bi bi-person-fill fs-2" style="color: #FFFF00; background-color: #000000; border-radius: 50%; padding: 5px;"></i>
+                        <p>Asian: 1%</p>
+                    </div>
+                </div>
+                <div class="panel-collapse">
+                    <div class="row row-cols-3">
+                        <div class="col text-center">
+                            <i class="bi bi-person-lines-fill fs-2"></i>
+                            <p>Hispanic: 31%</p>
+                        </div>
+                        <div class="col text-center">
+                            <i class="bi bi-gender-female fs-2"></i>
+                            <p>Female: 60%</p>
+                        </div>
+                        <div class="col text-center">
+                            <i class="bi bi-gender-male fs-2"></i>
+                            <p>Male: 40%</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Panel 3 - Housing Data -->
+        <div class="card card-demographics mb-3">
+            <div class="card-body">
+                <h5 class="text-center mb-3">Housing Data</h5>
+                <div class="row row-cols-3">
+                    <div class="col text-center">
+                        <i class="bi bi-house-door-fill fs-2"></i>
+                        <p>Median Home Price: $123,450</p>
+                    </div>
+                    <div class="col text-center">
+                        <i class="bi bi-house-heart-fill fs-2"></i>
+                        <p>Owner Occupied: 55%</p>
+                    </div>
+                    <div class="col text-center">
+                        <i class="bi bi-building fs-2"></i>
+                        <p>Rental Properties: 40%</p>
+                    </div>
+                </div>
+                <div class="panel-collapse">
+                    <div class="row row-cols-3">
+                        <div class="col text-center">
+                            <i class="bi bi-currency-dollar fs-2"></i>
+                            <p>Median Rent: $1456</p>
+                        </div>
+                        <div class="col text-center"></div> <!-- Empty column for spacing -->
+                        <div class="col text-center"></div> <!-- Empty column for spacing -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Panel 4 - Employment and Education Status -->
+        <div class="card card-demographics mb-3">
+            <div class="card-body">
+                <h5 class="text-center mb-3">Employment and Education</h5>
+                <div class="row row-cols-3">
+                    <div class="col text-center">
+                        <i class="bi bi-mortarboard-fill fs-2"></i>
+                        <p>College Degree: 36%</p>
+                    </div>
+                    <div class="col text-center">
+                        <i class="bi bi-book-half fs-2"></i>
+                        <p>Finished High School: 72%</p>
+                    </div>
+                    <div class="col text-center">
+                        <i class="bi bi-briefcase-fill fs-2"></i>
+                        <p>% Employed: 76%</p>
+                    </div>
+                </div>
+                <div class="panel-collapse">
+                    <div class="row row-cols-3">
+                        <div class="col text-center">
+                            <i class="bi bi-cash-stack fs-2"></i>
+                            <p>Per Capita Income: $38,400</p>
+                        </div>
+                        <div class="col text-center">
+                            <i class="bi bi-wallet-fill fs-2"></i>
+                            <p>Household Income: $89,700</p>
+                        </div>
+                        <div class="col text-center"></div> <!-- Empty column for spacing -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Panel 5 - Political Leanings -->
+        <div class="card card-demographics mb-3">
+            <div class="card-body">
+                <h5 class="text-center mb-3">Political Leanings</h5>
+                <div class="row row-cols-3">
+                    <div class="col text-center">
+                        <i class="bi bi-flag-fill fs-2" style="color: #E81B23;"></i> <!-- Red for Republicans -->
+                        <p>Registered Republican: 51%</p>
+                    </div>
+                    <div class="col text-center">
+                        <i class="bi bi-flag-fill fs-2" style="color: #2E74C0;"></i> <!-- Blue for Democrats -->
+                        <p>Registered Democrat: 45%</p>
+                    </div>
+                    <div class="col text-center">
+                        <i class="bi bi-flag-fill fs-2" style="color: #808080;"></i> <!-- Grey for Independents -->
+                        <p>Registered Independent: 4%</p>
+                    </div>
+                </div>
+                <div class="panel-collapse">
+                    <div class="row row-cols-3">
+                        <div class="col text-center">
+                            <i class="bi bi-award-fill fs-2" style="color: #FFD700;"></i> <!-- Gold for Winning Candidate -->
+                            <p>Winning Candidate 2024: Trump 60%</p>
+                        </div>
+                        <div class="col text-center"></div> <!-- Empty column for spacing -->
+                        <div class="col text-center"></div> <!-- Empty column for spacing -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Panel 3: Crime Data -->
+        <div class="card card-crime mb-3">
+            <div class="card-body">
+                <h5 class="text-center mb-3">Crime Data<br><small class="small-subtext">(zip code)</small></h5>
+                <div class="row row-cols-3">
+                    <div class="col text-center">
+                        <i class="bi bi-shield-exclamation fs-2"></i>
+                        <p>Property Crime</p>
+                        <p>C</p>
+                    </div>
+                    <div class="col text-center">
+                        <i class="bi bi-person-x-fill fs-2"></i>
+                        <p>Violent Crime</p>
+                        <p>D-</p>
+                    </div>
+                    <div class="col text-center">
+                        <i class="bi bi-person-exclamation fs-2"></i>
+                        <p>Sexual Predators</p>
+                        <p>15</p>
+                    </div>
+                </div>
+            </div>
+        </div>        <!-- Panel 4: Curated Wikipedia Data -->
+        <div class="card card-wikipedia mb-3">
+            <div class="card-body">
+                <h5 class="text-center mb-3">Currated Wikipedia Data</h5>
+                <p><strong>Intro:</strong> Fort Pierce is a city in and the county seat of St. Lucie County, Florida, United States. The city is part of the Treasure Coast region of Atlantic Coast Florida. It is also known as the Sunrise City. Per the 2020 census, the population was 47,297.</p>
+                <p><strong>History:</strong> The city was named after the Fort Pierce Army post which was built nearby in 1838 during the Second Seminole War, and lasted until 1842. The military post had been named for Benjamin Kendrick Pierce, a career United States Army officer and the brother of President Franklin Pierce. The first permanent settlement of the current city was during the 1860s. In 1901, the city was officially incorporated as a municipality. It was the largest city on Florida's Atlantic Coast between Daytona Beach and West Palm Beach until 1970, when it was surpassed by Melbourne. The neighborhood of Lincoln Park, the area north of Moore's Creek, originated as Edgartown.</p>
+            </div>
+        </div>
+
+        <!-- Panel 5: Wikivoyage -->
+        <div class="card card-wikivoyage mb-3">
+            <div class="card-body">
+                <h5 class="text-center mb-3">Wikivoyage<br><small class="small-subtext">(crowd sourced)</small></h5>
+                <div class="row row-cols-2">
+                    <div class="col text-center">
+                        <i class="bi bi-egg-fried fs-2"></i>
+                        <p>Eat</p>
+                        <p class="mb-0">2nd Street Bistro Tap House and Eatery</p>
+                        <div id="more-eat" class="d-none">
+                            <ul class="list-unstyled mb-0 mt-0">
+                                <li>12A Buoy</li>
+                                <li>Cobb's Landing</li>
+                                <li>Hurricane Grill and Wings</li>
+                                <li>Joy's Ice Cream Plus</li>
+                                <li>Phatz</li>
+                                <li>Chuck's Seafood Restaurant</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col text-center">
+                        <i class="bi bi-cup-straw fs-2"></i>
+                        <p>Drink</p>
+                        <p class="mb-0">Archie's Seabreeze</p>
+                        <div id="more-drink" class="d-none">
+                            <ul class="list-unstyled mb-0 mt-0">
+                                <li>Boozgeois Saloon</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col text-center">
+                        <i class="bi bi-eye fs-2"></i>
+                        <p>See</p>
+                        <p class="mb-0">Heathcote Botanical Gardens</p>
+                        <div id="more-see" class="d-none">
+                            <ul class="list-unstyled mb-0 mt-0">
+                                <li>Harbor Branch Oceanographic Institute</li>
+                                <li>Manatee Observation and Education Center</li>
+                                <li>Old Fort Park</li>
+                                <li>Old Fort Pierce City Hall</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col text-center">
+                        <i class="bi bi-activity fs-2"></i>
+                        <p>Do</p>
+                        <p class="mb-0">Pineapple Playhouse</p>
+                    </div>
+                </div>
+                <button id="moreButton" class="btn btn-link text-black panel-more-btn" onclick="toggleMore()">More</button>
+            </div>
+        </div>
+
+        <!-- Panel 6: Walk/Bike/Transit Scores -->
+        <div class="card card-transit mb-3">
+            <div class="card-body">
+                <h5 class="text-center mb-3">Walk/Bike/Transit Scores</h5>
+                <div class="row row-cols-3">
+                    <div class="col text-center">
+                        <i class="bi bi-person-fill fs-2"></i>
+                        <p>Walk Score</p>
+                        <p>100 out of 100</p>
+                        <p>Walker's Paradise</p>
+                    </div>
+                    <div class="col text-center">
+                        <i class="bi bi-bicycle fs-2"></i>
+                        <p>Bike Score</p>
+                        <p>93 out of 100</p>
+                        <p>Biker's Paradise</p>
+                    </div>
+                    <div class="col text-center">
+                        <i class="bi bi-bus-front-fill fs-2"></i>
+                        <p>Transit Score</p>
+                        <p>100 out of 100</p>
+                        <p>Rider's Paradise</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        function toggleMore() {
+            let panels = document.querySelectorAll('#more-eat, #more-drink, #more-see');
+            let button = document.getElementById('moreButton');
+
+            if (button.textContent === 'More') {
+                panels.forEach(panel => panel.classList.remove('d-none'));
+                button.textContent = 'Less';
+            } else {
+                panels.forEach(panel => panel.classList.add('d-none'));
+                button.textContent = 'More';
+            }
+        }
+
+        function toggleAllPanels() {
+            let panels = document.querySelectorAll('.panel-collapse');
+            let button = document.querySelector('.expand-all-btn');
+
+            panels.forEach(panel => {
+                panel.style.display = panel.style.display === 'none' || panel.style.display === '' ? 'grid' : 'none';
+            });
+
+            button.textContent = button.textContent === 'Expand All' ? 'Collapse All' : 'Expand All';
+        }
+    </script>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

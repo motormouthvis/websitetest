@@ -1,0 +1,14 @@
+{
+    "cSpell.words": [
+        "Locait"
+    ],
+    "github.copilot.enable": {
+        "html": true,
+        "python": true,
+        "java": true,
+        "javascript": true,
+        "plaintext": true,
+        "markdown": true,
+        "scminput": true
+    }
+}

@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neighborhood Settings</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        body {
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+        .settings-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .input-group {
+            margin-bottom: 20px;
+            padding: 15px;
+            border-radius: 15px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        .input-group:nth-child(even) {
+            background-color: #e6f2ff;
+        }
+        .input-group:nth-child(odd) {
+            background-color: #fff0e6;
+        }
+        .input-label {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+        .input-label i {
+            font-size: 24px;
+            margin-right: 10px;
+            color: #333;
+        }
+        .input-wrapper {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            min-height: 30px; /* Adjust based on your input height */
+        }
+        .form-control {
+            padding: 5px;
+            border-radius: 10px;
+            text-align: right;
+            font-size: 14px;
+        }
+        .percent-field {
+            width: 50px !important;
+        }
+        .number-field {
+            width: 100px !important;
+        }
+        .indicator {
+            font-size: 14px;
+            color: #6c757d;
+            margin-left: 5px;
+        }
+        .back-button {
+            margin-top: 20px;
+            text-align: center;
+        }
+        /* Align labels and inputs */
+        .input-group {
+            display: flex;
+            flex-direction: column;
+        }
+        .input-label {
+            width: 100%;
+        }
+        .input-wrapper {
+            margin-left: 0;
+            padding-left: 40%; /* Adjust this value to align with the longest label */
+        }
+        .double-input {
+            display: flex;
+            justify-content: space-between;
+            width: 200px; /* Adjust this width to fit within the shaded area */
+        }
+        .double-input .form-control {
+            margin-left: 0;
+        }
+        .double-input .min-max-label {
+            font-size: 12px;
+            color: #6c757d;
+            margin: 0 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container settings-container">
+        <h2 class="text-center mb-4">Neighborhood Preferences</h2>
+        
+        <div class="input-group">
+            <div class="input-label">
+                <i class="bi bi-people-fill" style="color: #007BFF;"></i>
+                Min and Max Population
+            </div>
+            <div class="input-wrapper">
+                <div class="double-input">
+                    <div>
+                        <input type="number" class="form-control number-field" id="populationMin" min="500" max="5000000" value="2500250" step="500">
+                        <div class="min-max-label">Min</div>
+                    </div>
+                    <div>
+                        <input type="number" class="form-control number-field" id="populationMax" min="500" max="5000000" value="2500250" step="500">
+                        <div class="min-max-label">Max</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="input-group">
+            <div class="input-label">
+                <i class="bi bi-calendar3" style="color: #28A745;"></i>
+                Min and Max Median Age
+            </div>
+            <div class="input-wrapper">
+                <div class="double-input">
+                    <div>
+                        <input type="number" class="form-control number-field" id="medianAgeMin" min="18" max="90" value="54" step="1">
+                        <div class="min-max-label">Min</div>
+                    </div>
+                    <div>
+                        <input type="number" class="form-control number-field" id="medianAgeMax" min="18" max="90" value="54" step="1">
+                        <div class="min-max-label">Max</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="input-group">
+            <div class="input-label">
+                <i class="bi bi-flag-fill" style="color: #DC3545;"></i>
+                Min Born in USA
+            </div>
+            <div class="input-wrapper">
+                <input type="number" class="form-control percent-field" id="bornInUSAMin" min="0" max="100" value="50">
+                <span class="indicator">%</span>
+            </div>
+        </div>
+
+        <div class="input-group">
+            <div class="input-label">
+                <i class="bi bi-person-check-fill" style="color: #FFC107;"></i>
+                Min US Citizens
+            </div>
+            <div class="input-wrapper">
+                <input type="number" class="form-control percent-field" id="usCitizensMin" min="0" max="100" value="50">
+                <span class="indicator">%</span>
+            </div>
+        </div>
+
+        <div class="input-group">
+            <div class="input-label">
+                <i class="bi bi-person-fill" style="color: #6610f2;"></i>
+                Max White Race
+            </div>
+            <div class="input-wrapper">
+                <input type="number" class="form-control percent-field" id="whiteRaceMax" min="0" max="100" value="50">
+                <span class="indicator">%</span>
+            </div>
+        </div>
+
+        <div class="input-group">
+            <div class="input-label">
+                <i class="bi bi-person-fill" style="color: #007BFF;"></i>
+                Max Black Race
+            </div>
+            <div class="input-wrapper">
+                <input type="number" class="form-control percent-field" id="blackRaceMax" min="0" max="100" value="50">
+                <span class="indicator">%</span>
+            </div>
+        </div>
+
+        <div class="input-group">
+            <div class="input-label">
+                <i class="bi bi-person-fill" style="color: #28A745;"></i>
+                Max Asian Race
+            </div>
+            <div class="input-wrapper">
+                <input type="number" class="form-control percent-field" id="asianRaceMax" min="0" max="100" value="50">
+                <span class="indicator">%</span>
+            </div>
+        </div>
+
+        <div class="input-group">
+            <div class="input-label">
+                <i class="bi bi-person-lines-fill" style="color: #DC3545;"></i>
+                Max Hispanic
+            </div>
+            <div class="input-wrapper">
+                <input type="number" class="form-control percent-field" id="hispanicRaceMax" min="0" max="100" value="50">
+                <span class="indicator">%</span>
+            </div>
+        </div>
+
+        <div class="input-group">
+            <div class="input-label">
+                <i class="bi bi-gender-female" style="color: #FFC107;"></i>
+                Max Female
+            </div>
+            <div class="input-wrapper">
+                <input type="number" class="form-control percent-field" id="femaleMax" min="0" max="100" value="50">
+                <span class="indicator">%</span>
+            </div>
+        </div>
+
+        <div class="input-group">
+            <div class="input-label">
+                <i class="bi bi-mortarboard-fill" style="color: #6610f2;"></i>
+                Min College Degree
+            </div>
+            <div class="input-wrapper">
+                <input type="number" class="form-control percent-field" id="collegeDegreeMin" min="0" max="100" value="50">
+                <span class="indicator">%</span>
+            </div>
+        </div>
+
+        <div class="input-group">
+            <div class="input-label">
+                <i class="bi bi-book-half" style="color: #007BFF;"></i>
+                Min Finished High School
+            </div>
+            <div class="input-wrapper">
+                <input type="number" class="form-control percent-field" id="finishedHighSchoolMin" min="0" max="100" value="50">
+                <span class="indicator">%</span>
+            </div>
+        </div>
+
+        <div class="input-group">
+            <div class="input-label">
+                <i class="bi bi-briefcase-fill" style="color: #28A745;"></i>
+                Min % Employed
+            </div>
+            <div class="input-wrapper">
+                <input type="number" class="form-control percent-field" id="employedMin" min="0" max="100" value="50">
+                <span class="indicator">%</span>
+            </div>
+        </div>
+
+        <div class="input-group">
+            <div class="input-label">
+                <i class="bi bi-cash-stack" style="color: #DC3545;"></i>
+                Min Per Capita Income
+            </div>
+            <div class="input-wrapper">
+                <input type="number" class="form-control number-field" id="perCapitaIncomeMin" min="5000" max="250000" value="127500" step="1000">
+                <span class="indicator">$</span>
+            </div>
+        </div>
+
+        <div class="input-group">
+            <div class="input-label">
+                <i class="bi bi-wallet-fill" style="color: #FFC107;"></i>
+                Min Household Income
+            </div>
+            <div class="input-wrapper">
+                <input type="number" class="form-control number-field" id="householdIncomeMin" min="5000" max="250000" value="127500" step="1000">
+                <span class="indicator">$</span>
+            </div>
+        </div>
+
+        <div class="input-group">
+            <div class="input-label">
+                <i class="bi bi-house-door-fill" style="color: #6610f2;"></i>
+                Max Median Home Price
+            </div>
+            <div class="input-wrapper">
+                <input type="number" class="form-control number-field" id="medianHomePriceMax" min="20000" max="5000000" value="2510000" step="1000">
+                <span class="indicator">$</span>
+            </div>
+        </div>
+
+        <div class="input-group">
+            <div class="input-label">
+                <i class="bi bi-house-heart-fill" style="color: #007BFF;"></i>
+                Min Homes Occupied by Owner
+            </div>
+            <div class="input-wrapper">
+                <input type="number" class="form-control percent-field" id="ownerOccupiedMin" min="0" max="100" value="50">
+                <span class="indicator">%</span>
+            </div>
+        </div>
+
+        <div class="input-group">
+            <div class="input-label">
+                <i class="bi bi-building" style="color: #28A745;"></i>
+                Max Rental Properties
+            </div>
+            <div class="input-wrapper">
+                <input type="number" class="form-control percent-field" id="rentalPropertiesMax" min="0" max="100" value="50">
+                <span class="indicator">%</span>
+            </div>
+        </div>
+
+        <div class="input-group">
+            <div class="input-label">
+                <i class="bi bi-currency-dollar" style="color: #DC3545;"></i>
+                Median Rent
+            </div>
+            <div class="input-wrapper">
+                <input type="number" class="form-control number-field" id="medianRentMin" min="500" max="100000" value="50250" step="100">
+                <span class="indicator">$</span>
+            </div>
+        </div>
+
+        <div class="input-group">
+            <div class="input-label">
+                <i class="bi bi-flag-fill" style="color: #FFC107;"></i>
+                Max Registered Republican
+            </div>
+            <div class="input-wrapper">
+                <input type="number" class="form-control percent-field" id="registeredRepublicanMax" min="0" max="100" value="50">
+                <span class="indicator">%</span>
+            </div>
+        </div>
+
+        <div class="input-group">
+            <div class="input-label">
+                <i class="bi bi-flag-fill" style="color: #6610f2;"></i>
+                Max Registered Democrat
+            </div>
+            <div class="input-wrapper">
+                <input type="number" class="form-control percent-field" id="registeredDemocratMax" min="0" max="100" value="50">
+                <span class="indicator">%</span>
+            </div>
+        </div>
+
+        <div class="input-group">
+            <div class="input-label">
+                <i class="bi bi-flag-fill" style="color: #007BFF;"></i>
+                Max Registered Independent
+            </div>
+            <div class="input-wrapper">
+                <input type="number" class="form-control percent-field" id="registeredIndependentMax" min="0" max="100" value="50">
+                <span class="indicator">%</span>
+            </div>
+        </div>
+
+        <div class="input-group">
+            <div class="input-label">
+                <i class="bi bi-award-fill" style="color: #28A745;"></i>
+                Max Voted for Trump
+            </div>
+            <div class="input-wrapper">
+                <input type="number" class="form-control percent-field" id="votedTrumpMax" min="0" max="100" value="50">
+                <span class="indicator">%</span>
+            </div>
+        </div>
+
+        <div class="input-group">
+            <div class="input-label">
+                <i class="bi bi-award-fill" style="color: #DC3545;"></i>
+                Max Voted for Harris
+            </div>
+            <div class="input-wrapper">
+                <input type="number" class="form-control percent-field" id="votedHarrisMax" min="0" max="100" value="50">
+                <span class="indicator">%</span>
+            </div>
+        </div>
+
+        <div class="back-button">
+            <a href="index.html" class="btn btn-secondary">Back to Main Page</a>
+        </div>
+    </div>
+
+    <script>
+        // Additional JS for interactivity can go here
+    </script>
+</body>
+</html>
